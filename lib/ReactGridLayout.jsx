@@ -115,7 +115,9 @@ export default class ReactGridLayout extends React.Component<Props, State> {
     onResize: noop,
     onResizeStop: noop,
     onDrop: noop,
-    onDropDragOver: noop
+    onDropDragOver: noop,
+    onCancelDragStart: noop,
+    onCancelDragEnd: noop
   };
 
   state: State = {
@@ -556,7 +558,9 @@ export default class ReactGridLayout extends React.Component<Props, State> {
       draggableCancel,
       draggableHandle,
       resizeHandles,
-      resizeHandle
+      resizeHandle,
+      onCancelDragStart,
+      onCancelDragEnd
     } = this.props;
     const { mounted, droppingPosition } = this.state;
 
@@ -611,6 +615,8 @@ export default class ReactGridLayout extends React.Component<Props, State> {
         droppingPosition={isDroppingItem ? droppingPosition : undefined}
         resizeHandles={resizeHandlesOptions}
         resizeHandle={resizeHandle}
+        onCancelDragStart={onCancelDragStart}
+        onCancelDragEnd={onCancelDragEnd}
       >
         {child}
       </GridItem>
@@ -620,6 +626,11 @@ export default class ReactGridLayout extends React.Component<Props, State> {
   // Called while dragging an element. Part of browser native drag/drop API.
   // Native event target might be the layout itself, or an element within the layout.
   onDragOver: DragOverEvent => void | false = e => {
+    // 解放拖拽draggableCancel
+    if (e.target.classList.contains(this.props.draggableCancel)) {
+      console.log("外层处理cancel dragOver");
+      return false;
+    }
     e.preventDefault(); // Prevent any browser native action
     e.stopPropagation();
 
@@ -725,6 +736,11 @@ export default class ReactGridLayout extends React.Component<Props, State> {
   };
 
   onDragLeave: EventHandler = e => {
+    // 解放拖拽draggableCancel
+    if (e.target.classList.contains(this.props.draggableCancel)) {
+      console.log("外层处理cancel dragleave");
+      return false;
+    }
     e.preventDefault(); // Prevent any browser native action
     e.stopPropagation();
     this.dragEnterCounter--;
@@ -740,12 +756,23 @@ export default class ReactGridLayout extends React.Component<Props, State> {
   };
 
   onDragEnter: EventHandler = e => {
+    // 解放拖拽draggableCancel
+    if (e.target.classList.contains(this.props.draggableCancel)) {
+      console.log("外层处理cancel drag enter");
+      return false;
+    }
     e.preventDefault(); // Prevent any browser native action
     e.stopPropagation();
     this.dragEnterCounter++;
   };
 
   onDrop: EventHandler = (e: Event) => {
+    // 解放拖拽draggableCancel
+    if (e.target.classList.contains(this.props.draggableCancel)) {
+      console.log("外层处理cancel drop");
+      return false;
+    }
+    // console.log("onDrooppp", e);
     e.preventDefault(); // Prevent any browser native action
     e.stopPropagation();
     const { droppingItem } = this.props;
