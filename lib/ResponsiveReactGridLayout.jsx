@@ -69,7 +69,9 @@ type Props<Breakpoint: string = string> = {|
     margin: [number, number],
     cols: number,
     containerPadding: ?[number, number]
-  ) => void
+  ) => void,
+  onCancelDragStart: (e: any) => void,
+  onCancelDragEnd: (e: any) => void
 |};
 
 type DefaultProps = Pick<
@@ -83,7 +85,9 @@ type DefaultProps = Pick<
     margin: 0,
     onBreakpointChange: 0,
     onLayoutChange: 0,
-    onWidthChange: 0
+    onWidthChange: 0,
+    onCancelDragStart: 0,
+    onCancelDragEnd: 0
   |}
 >;
 
@@ -157,7 +161,9 @@ export default class ResponsiveReactGridLayout extends React.Component<
     onLayoutChange: PropTypes.func,
 
     // Calls back with (containerWidth, margin, cols, containerPadding)
-    onWidthChange: PropTypes.func
+    onWidthChange: PropTypes.func,
+    onCancelDragStart: PropTypes.func,
+    onCancelDragEnd: PropTypes.func
   };
 
   static defaultProps: DefaultProps = {
@@ -169,7 +175,9 @@ export default class ResponsiveReactGridLayout extends React.Component<
     allowOverlap: false,
     onBreakpointChange: noop,
     onLayoutChange: noop,
-    onWidthChange: noop
+    onWidthChange: noop,
+    onCancelDragStart: noop,
+    onCancelDragEnd: noop
   };
 
   state: State = this.generateInitialState();

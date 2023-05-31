@@ -350,6 +350,8 @@ export default class GridItem extends React.Component<Props, State> {
         }
         scale={this.props.transformScale}
         nodeRef={this.elementRef}
+        onCancelDragStart={this.props.onCancelDragStart}
+        onCancelDragEnd={this.props.onCancelDragEnd}
       >
         {child}
       </DraggableCore>

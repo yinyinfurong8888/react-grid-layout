@@ -4,9 +4,9 @@ const webpack = require("webpack");
 // Builds bundle usable <script>. Includes RGL and all deps, excluding React.
 module.exports = {
   mode: "production",
-  optimization: {
-    minimize: true
-  },
+  // optimization: {
+  //   minimize: true
+  // },
   context: __dirname,
   entry: {
     "react-grid-layout": "./index-dev.js"
@@ -50,8 +50,8 @@ module.exports = {
       "process.env": {
         NODE_ENV: JSON.stringify("production")
       }
-    }),
-    new webpack.optimize.ModuleConcatenationPlugin()
+    })
+    // new webpack.optimize.ModuleConcatenationPlugin()
   ],
   resolve: {
     extensions: [".js", ".jsx"]
