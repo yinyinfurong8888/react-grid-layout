@@ -1,5 +1,5 @@
 {
-  "name": "react-grid-drag-layout",
+  "name": "@yinyinfurong888/react-grid-drag-layout",
   "version": "0.0.2",
   "description": "A draggable and resizable grid layout with responsive breakpoints, for React.",
   "main": "index.js",
