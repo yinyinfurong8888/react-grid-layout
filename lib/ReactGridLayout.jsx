@@ -15,7 +15,8 @@ import {
   moveElement,
   noop,
   synchronizeLayoutWithChildren,
-  withLayoutItem
+  withLayoutItem,
+  matchesSelector
 } from "./utils";
 
 import { calcXY } from "./calculateUtils";
@@ -58,7 +59,7 @@ type State = {
 import type { Props, DefaultProps } from "./ReactGridLayoutPropTypes";
 
 // End Types
-
+const DRAG_GRID_ITEM_TYPE = "react-grid-item-cancel-drag";
 const layoutClassName = "react-grid-layout";
 let isFirefox = false;
 // Try...catch will protect from navigator not existing (e.g. node) or a bad implementation of navigator
@@ -117,7 +118,11 @@ export default class ReactGridLayout extends React.Component<Props, State> {
     onDrop: noop,
     onDropDragOver: noop,
     onCancelDragStart: noop,
-    onCancelDragEnd: noop
+    onCancelDragEnd: noop,
+    onCancelDrop: noop,
+    onCancelDragLeave: noop,
+    onCancelDragEnter: noop,
+    onCancelDragOver: noop
   };
 
   state: State = {
@@ -627,10 +632,19 @@ export default class ReactGridLayout extends React.Component<Props, State> {
   // Native event target might be the layout itself, or an element within the layout.
   onDragOver: DragOverEvent => void | false = e => {
     // 解放拖拽draggableCancel
-    if (e.target.classList.contains(this.props.draggableCancel)) {
-      console.log("外层处理cancel dragOver");
-      return false;
+    if (this.props.draggableCancel) {
+      if (e.dataTransfer.types.includes(DRAG_GRID_ITEM_TYPE)) {
+        console.log("外层处理cancel dragOver");
+        // e.preventDefault(); // Prevent any browser native action
+        e.stopPropagation();
+        this.props.onCancelDragOver && this.props.onCancelDragOver(e);
+        return false;
+      }
     }
+    // if (e.target.classList.contains(this.props.draggableCancel)) {
+    //   console.log("外层处理cancel dragOver");
+    //   return false;
+    // }
     e.preventDefault(); // Prevent any browser native action
     e.stopPropagation();
 
@@ -737,10 +751,19 @@ export default class ReactGridLayout extends React.Component<Props, State> {
 
   onDragLeave: EventHandler = e => {
     // 解放拖拽draggableCancel
-    if (e.target.classList.contains(this.props.draggableCancel)) {
-      console.log("外层处理cancel dragleave");
-      return false;
+    if (this.props.draggableCancel) {
+      if (e.dataTransfer.types.includes(DRAG_GRID_ITEM_TYPE)) {
+        console.log("外层处理cancel draglevave");
+        // e.preventDefault(); // Prevent any browser native action
+        e.stopPropagation();
+        this.props.onCancelDragLeave && this.props.onCancelDragLeave(e);
+        return false;
+      }
     }
+    // if (e.target.classList.contains(this.props.draggableCancel)) {
+    //   console.log("外层处理cancel dragleave");
+    //   return false;
+    // }
     e.preventDefault(); // Prevent any browser native action
     e.stopPropagation();
     this.dragEnterCounter--;
@@ -757,10 +780,19 @@ export default class ReactGridLayout extends React.Component<Props, State> {
 
   onDragEnter: EventHandler = e => {
     // 解放拖拽draggableCancel
-    if (e.target.classList.contains(this.props.draggableCancel)) {
-      console.log("外层处理cancel drag enter");
-      return false;
+    if (this.props.draggableCancel) {
+      if (e.dataTransfer.types.includes(DRAG_GRID_ITEM_TYPE)) {
+        console.log("外层处理cancel enter");
+        // e.preventDefault(); // Prevent any browser native action
+        e.stopPropagation();
+        this.props.onCancelDragEnter && this.props.onCancelDragEnter(e);
+        return false;
+      }
     }
+    // if (e.target.classList.contains(this.props.draggableCancel)) {
+    //   console.log("外层处理cancel drag enter");
+    //   return false;
+    // }
     e.preventDefault(); // Prevent any browser native action
     e.stopPropagation();
     this.dragEnterCounter++;
@@ -768,10 +800,19 @@ export default class ReactGridLayout extends React.Component<Props, State> {
 
   onDrop: EventHandler = (e: Event) => {
     // 解放拖拽draggableCancel
-    if (e.target.classList.contains(this.props.draggableCancel)) {
-      console.log("外层处理cancel drop");
-      return false;
+    if (this.props.draggableCancel) {
+      if (e.dataTransfer.types.includes(DRAG_GRID_ITEM_TYPE)) {
+        console.log("外层处理cancel drag drop");
+        // e.preventDefault(); // Prevent any browser native action
+        e.stopPropagation();
+        this.props.onCancelDrop && this.props.onCancelDrop(e);
+        return false;
+      }
     }
+    // if (e.target.classList.contains(this.props.draggableCancel)) {
+    //   console.log("外层处理cancel drop");
+    //   return false;
+    // }
     // console.log("onDrooppp", e);
     e.preventDefault(); // Prevent any browser native action
     e.stopPropagation();

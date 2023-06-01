@@ -1,7 +1,8 @@
 // @flow
 import React from "react";
 import PropTypes from "prop-types";
-import { DraggableCore } from "react-draggable";
+// import { DraggableCore } from "react-draggable";
+import DraggableCore from "./DraggableCore";
 import { Resizable } from "react-resizable";
 import { fastPositionEqual, perc, setTopLeft, setTransform } from "./utils";
 import {
@@ -216,6 +217,13 @@ export default class GridItem extends React.Component<Props, State> {
   shouldComponentUpdate(nextProps: Props, nextState: State): boolean {
     // We can't deeply compare children. If the developer memoizes them, we can
     // use this optimization.
+    console.log(
+      "gridItem shouldComponentUpdate",
+      nextProps,
+      this.props,
+      nextState,
+      this.state
+    );
     if (this.props.children !== nextProps.children) return true;
     if (this.props.droppingPosition !== nextProps.droppingPosition) return true;
     // TODO memoize these calculations so they don't take so long?
@@ -246,6 +254,7 @@ export default class GridItem extends React.Component<Props, State> {
   }
 
   componentDidUpdate(prevProps: Props) {
+    console.log("prevProps:", prevProps, "props:", this.props);
     this.moveDroppingItem(prevProps);
   }
 
@@ -352,6 +361,7 @@ export default class GridItem extends React.Component<Props, State> {
         nodeRef={this.elementRef}
         onCancelDragStart={this.props.onCancelDragStart}
         onCancelDragEnd={this.props.onCancelDragEnd}
+        // onCancelDrop={this.props.onCancelDrop}
       >
         {child}
       </DraggableCore>

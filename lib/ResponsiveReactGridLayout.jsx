@@ -71,7 +71,11 @@ type Props<Breakpoint: string = string> = {|
     containerPadding: ?[number, number]
   ) => void,
   onCancelDragStart: (e: any) => void,
-  onCancelDragEnd: (e: any) => void
+  onCancelDragEnd: (e: any) => void,
+  onCancelDrop: (e: any) => void,
+  onCancelDragEnter: (e: any) => void,
+  onCancelDragLeave: (e: any) => void,
+  onCancelDragOver: (e: any) => void
 |};
 
 type DefaultProps = Pick<
@@ -87,7 +91,11 @@ type DefaultProps = Pick<
     onLayoutChange: 0,
     onWidthChange: 0,
     onCancelDragStart: 0,
-    onCancelDragEnd: 0
+    onCancelDragEnd: 0,
+    onCancelDrop: 0,
+    onCancelDragEnter: 0,
+    onCancelDragLeave: 0,
+    onCancelDragOver: 0
   |}
 >;
 
@@ -163,7 +171,11 @@ export default class ResponsiveReactGridLayout extends React.Component<
     // Calls back with (containerWidth, margin, cols, containerPadding)
     onWidthChange: PropTypes.func,
     onCancelDragStart: PropTypes.func,
-    onCancelDragEnd: PropTypes.func
+    onCancelDragEnd: PropTypes.func,
+    onCancelDrop: PropTypes.func,
+    onCancelDragEnter: PropTypes.func,
+    onCancelDragLeave: PropTypes.func,
+    onCancelDragOver: PropTypes.func
   };
 
   static defaultProps: DefaultProps = {
@@ -177,7 +189,11 @@ export default class ResponsiveReactGridLayout extends React.Component<
     onLayoutChange: noop,
     onWidthChange: noop,
     onCancelDragStart: noop,
-    onCancelDragEnd: noop
+    onCancelDragEnd: noop,
+    onCancelDrop: noop,
+    onCancelDragEnter: noop,
+    onCancelDragLeave: noop,
+    onCancelDragOver: noop
   };
 
   state: State = this.generateInitialState();
