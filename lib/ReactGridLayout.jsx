@@ -565,8 +565,6 @@ export default class ReactGridLayout extends React.Component<Props, State> {
       resizeHandles,
       resizeHandle,
       onCancelDragStart,
-      onCancelDragEnd,
-      onCancelDragStart,
       onCancelDragEnd
     } = this.props;
     const { mounted, droppingPosition } = this.state;
@@ -622,8 +620,6 @@ export default class ReactGridLayout extends React.Component<Props, State> {
         droppingPosition={isDroppingItem ? droppingPosition : undefined}
         resizeHandles={resizeHandlesOptions}
         resizeHandle={resizeHandle}
-        onCancelDragStart={onCancelDragStart}
-        onCancelDragEnd={onCancelDragEnd}
         onCancelDragStart={onCancelDragStart}
         onCancelDragEnd={onCancelDragEnd}
       >
