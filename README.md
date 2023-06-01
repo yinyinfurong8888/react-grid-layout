@@ -511,6 +511,20 @@ will be draggable, even if the item is marked `static: true`.
 }
 ```
 
+### Grid Item Heights and Widths
+
+Grid item widths are based on container and number of columns. The size of a grid unit's height is based on `rowHeight`.
+
+Note that an item that has `h=2` is _not exactly twice as tall as one with `h=1` unless you have no `margin`_!
+
+In order for the grid to not be ragged, when an item spans grid units, it must also span margins. So you must add the height or width or the margin you are spanning for each unit. So actual pixel height is `(rowHeight * h) + (marginH * (h - 1)`.
+
+For example, with `rowHeight=30`, `margin=[10,10]` and a unit with height 4, the calculation is `(30 * 4) + (10 * 3)`
+
+![margin](margin.png)
+
+If this is a problem for you, set `margin=[0,0]` and handle visual spacing between your elements inside the elements' content.
+
 ### Performance
 
 `<ReactGridLayout>` has [an optimized `shouldComponentUpdate` implementation](lib/ReactGridLayout.jsx), but it relies on the user memoizing the `children` array:
@@ -546,20 +560,30 @@ function MyGrid(props) {
 
 Because the `children` prop doesn't change between rerenders, updates to `<MyGrid>` won't result in new renders, improving performance.
 
+### React Hooks Performance
+
+Using hooks to save your layout state on change will cause the layouts to re-render as the ResponsiveGridLayout will change it's value on every render.
+To avoid this you should wrap your WidthProvider in a useMemo:
+
+```js
+const ResponsiveReactGridLayout = useMemo(() => WidthProvider(Responsive), []);
+```
+
 ### Custom Child Components and Draggable Handles
 
 If you use React Components as grid children, they need to do a few things:
 
 1. Forward refs to an underlying DOM node, and
-2. Forward `style` and `className` to that same DOM node.
+2. Forward `style`,`className`, `onMouseDown`, `onMouseUp` and `onTouchEnd` to that same DOM node.
 
 For example:
 
 ```js
-const CustomGridItemComponent = React.forwardRef(({style, className, ...props}, ref) => {
+const CustomGridItemComponent = React.forwardRef(({style, className, onMouseDown, onMouseUp, onTouchEnd, children, ...props}, ref) => {
   return (
-    <div style={{ /* styles */, ...style}} className={className} ref={ref}>
+    <div style={{ /* styles */, ...style}} className={className} ref={ref} onMouseDown={onMouseDown} onMouseUp={onMouseUp} onTouchEnd={onTouchEnd}>
       {/* Some other content */}
+      {children} {/* Make sure to include children to add resizable handle */}
     </div>
   );
 }

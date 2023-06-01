@@ -17,7 +17,7 @@ import {
   calcWH,
   calcXY
 } from "../../lib/calculateUtils";
-import isEqual from "lodash.isequal";
+import { deepEqual } from "fast-equals";
 import deepFreeze from "./../util/deepFreeze";
 
 describe("bottom", () => {
@@ -493,6 +493,23 @@ describe("compact horizontal", () => {
       { y: 5, x: 2, h: 1, w: 1, i: "5", moved: false, static: true }
     ]);
   });
+
+  it('Should put overflowing right elements as bottom needed without colliding and as left as possible', () => {
+    const cols = 6;
+    const layout = [
+      {y: 0, x: 0, h: 2, w: 2, i: '1'},
+      {y: 0, x: 2, h: 2, w: 2, i: '2'},
+      {y: 0, x: 4, h: 2, w: 2, i: '3'},
+      {y: -2, x: -2, h: 2, w: 2, i: '4'}
+    ];
+
+    expect(compact(layout, 'horizontal', cols)).toEqual([
+      {y: 0, x: 2, h: 2, w: 2, i: '1', moved: false, static: false},
+      {y: 0, x: 4, h: 2, w: 2, i: '2', moved: false, static: false},
+      {y: 2, x: 0, h: 2, w: 2, i: '3', moved: false, static: false},
+      {y: 0, x: 0, h: 2, w: 2, i: '4', moved: false, static: false},
+    ]);
+  });
 });
 
 const basePositionParams = {
@@ -573,7 +590,7 @@ describe("fastRGLPropsEqual", () => {
       margin: [10, 10],
       style: { background: "red" }
     };
-    expect(fastRGLPropsEqual(props1, props2, isEqual)).toEqual(true);
+    expect(fastRGLPropsEqual(props1, props2, deepEqual)).toEqual(true);
   });
 
   it("catches changed arrays", () => {
@@ -583,7 +600,7 @@ describe("fastRGLPropsEqual", () => {
     const props2 = {
       margin: [10, 11]
     };
-    expect(fastRGLPropsEqual(props1, props2, isEqual)).toEqual(false);
+    expect(fastRGLPropsEqual(props1, props2, deepEqual)).toEqual(false);
   });
 
   it("ignores children", () => {
@@ -593,7 +610,7 @@ describe("fastRGLPropsEqual", () => {
     const props2 = {
       children: ["biff", "bar"]
     };
-    expect(fastRGLPropsEqual(props1, props2, isEqual)).toEqual(true);
+    expect(fastRGLPropsEqual(props1, props2, deepEqual)).toEqual(true);
   });
 
   it("fails added props", () => {
@@ -601,7 +618,7 @@ describe("fastRGLPropsEqual", () => {
     const props2 = {
       droppingItem: { w: 1, h: 2, i: 3 }
     };
-    expect(fastRGLPropsEqual(props1, props2, isEqual)).toEqual(false);
+    expect(fastRGLPropsEqual(props1, props2, deepEqual)).toEqual(false);
   });
 
   it("ignores invalid props", () => {
@@ -609,7 +626,7 @@ describe("fastRGLPropsEqual", () => {
     const props2 = {
       somethingElse: { w: 1, h: 2, i: 3 }
     };
-    expect(fastRGLPropsEqual(props1, props2, isEqual)).toEqual(true);
+    expect(fastRGLPropsEqual(props1, props2, deepEqual)).toEqual(true);
   });
 });
 
@@ -695,4 +712,63 @@ describe("deepFreeze", () => {
     );
     expect(JSON.stringify(deepFreezeResult)).toBe('{"a":"a","b":{"b":"c"}}');
   });
+  it('gets nested key value', () => {
+    const res = deepFreeze(
+      { one: "a", two: { b: "c" } },
+      { set: true, get: true }
+    )
+
+    const val = res.two.b
+    expect(val).toBe('c')
+  })
+  it('defaults option prop to get: true', () => {
+    const res = deepFreeze(
+      { one: "a", two: { b: "c" } },
+    );
+
+    expect(res.two.b).toBe('c')
+  })
+  it("does not pass check `if(options.set)` ", () => {
+    const res = deepFreeze({ one: "a" }, {set: false, get:false});
+    expect(res.one).toBe("a");
+  });
+
+
+  it('returns `toJSON`', () => {
+    const res = deepFreeze({ a: 'toJSON' })
+    expect(res.a.toString()).toBe(`toJSON`)
+  })
+  describe('throws "unknown prop" error', () => {
+    it('when setting bad key', () => {
+      try {
+        const res = deepFreeze(
+          { one: "a", two: { b: "c" } },
+          { set: true, get: false }
+        );
+        // $FlowIgnore to test the error throw
+        res.badProp = "dog";
+      } catch (e) {
+        expect(e.message).toBe(
+          'Can not set unknown prop "badProp" on frozen object.'
+        );
+      }
+    })
+    it("when getting bad key", () => {
+      try {
+        const res = deepFreeze(
+          { one: "a", two: { b: "c" } },
+          { set: true, get: true }
+        );
+        // $FlowIgnore to test the error throws
+        res.badProp;
+
+      } catch (e) {
+        expect(e.message).toBe(
+          'Can not get unknown prop "badProp" on frozen object.'
+        );
+      }
+    });
+  })
+
+
 });

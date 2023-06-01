@@ -361,7 +361,6 @@ export default class GridItem extends React.Component<Props, State> {
         nodeRef={this.elementRef}
         onCancelDragStart={this.props.onCancelDragStart}
         onCancelDragEnd={this.props.onCancelDragEnd}
-        // onCancelDrop={this.props.onCancelDrop}
       >
         {child}
       </DraggableCore>
