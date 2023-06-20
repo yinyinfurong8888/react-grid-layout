@@ -1,6 +1,6 @@
 {
-  "name": "@yinyinfurong888/react-grid-drag-layout",
-  "version": "0.0.2",
+  "name": "@yinyinfurong888/react-grid-layout-cancel-drag",
+  "version": "0.0.3",
   "description": "A draggable and resizable grid layout with responsive breakpoints, for React.",
   "main": "index.js",
   "scripts": {
@@ -18,7 +18,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git@github.com:STRML/react-grid-layout.git"
+    "url": "git+ssh://git@github.com/yinyinfurong8888/react-grid-layout.git"
   },
   "keywords": [
     "react",
@@ -121,5 +121,10 @@
       "eslint --ext .js,.jsx --fix",
       "yarn fmt"
     ]
+  },
+  "directories": {
+    "example": "examples",
+    "lib": "lib",
+    "test": "test"
   }
 }
